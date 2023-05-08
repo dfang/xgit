@@ -40,7 +40,7 @@ func main() {
 	var isDepth = false
 	for i := 0; i < len(args); i++ {
 		if isClone && strings.Contains(args[i], "https://github.com") {
-			args[i] = strings.Replace(args[i], "https://github.com", "https://gitclone.com/github.com", -1)
+			args[i] = strings.Replace(args[i], "https://github.com", "https://ghproxy.com/github.com", -1)
 		}
 		if strings.Contains(args[i], "depth") {
 			isDepth = true

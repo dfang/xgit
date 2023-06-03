@@ -7,10 +7,10 @@ make `git clone https://github.com/<author>/<repo>` faster or work in your serve
 ## install
 
 ```
-curl -sf https://gobinaries.com/dfang/cgit | sh
+curl -sf https://gobinaries.com/dfang/xgit | sh
 ```
 
 
 ```
-alias git=cgit
+alias git='xgit'
 ```

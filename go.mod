@@ -1,3 +1,3 @@
-module github.com/dfang/cgit
+module github.com/dfang/xgit
 
 go 1.14

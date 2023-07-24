@@ -45,6 +45,9 @@ func main() {
 		if strings.Contains(args[i], "depth") {
 			isDepth = true
 		}
+		if strings.Contains(args[i], "no-depth") {
+			isDepth = true
+		}	
 	}
 	if isClone && (!isDepth) {
 		args = append(args, "--depth=1")

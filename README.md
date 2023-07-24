@@ -10,7 +10,32 @@ make `git clone https://github.com/<author>/<repo>` faster or work in your serve
 curl -sf https://gobinaries.com/dfang/xgit | sh
 ```
 
-
 ```
 alias git='xgit'
+```
+
+## run
+
+```
+xgit clone https://github.com/golang/go
+```
+equals
+
+```
+git clone --depth=1 https://ghproxy.com/https://github.com/golang/go
+```
+
+by default, `--depth=1` is added to `xgit clone`, you have to run `git fetch --unshallow` to get all old commits if you want after clone is done.
+
+you can `--no-depth=` to skip `--depth=1`.
+
+eg. `xgit clone https://github.com/golang/go`
+
+
+if you want to change url for remote after:
+
+```
+git remote -v
+git remote set-url origin <ORIGIN GITHUB LINK>
+git remote -v
 ```

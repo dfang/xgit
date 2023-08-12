@@ -13,6 +13,6 @@ RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache
 
 # FROM golang:1.21
 FROM alpine
-RUN apk add git ca-certificates --no-cache 
+RUN apk update && add git ca-certificates --no-cache
 COPY --from=builder /go/bin/xgit  /go/bin/xgit
 CMD ["/go/bin/xgit"]

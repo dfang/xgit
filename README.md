@@ -8,10 +8,8 @@ make `git clone https://github.com/<author>/<repo>` faster or work in your serve
 
 ```
 curl -sf https://gobinaries.com/dfang/xgit | sh
-```
 
-```
-alias git='xgit'
+curl -sf https://github.com/dfang/xgit/blob/master/scripts/install.sh | sh
 ```
 
 ## run
@@ -19,7 +17,7 @@ alias git='xgit'
 ```
 xgit clone https://github.com/golang/go
 ```
-equals
+equals to
 
 ```
 git clone --depth=1 https://ghproxy.com/https://github.com/golang/go
@@ -29,7 +27,7 @@ by default, `--depth=1` is added to `xgit clone`, you have to run `git fetch --u
 
 you can `--no-depth=` to skip `--depth=1`.
 
-eg. `xgit clone https://github.com/golang/go`
+eg. `xgit clone https://github.com/golang/go` or `xgit clone golang/go`
 
 
 if you want to change url for remote after:

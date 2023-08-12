@@ -63,7 +63,7 @@ download_file() {
 
 install_xgit() {
 	# download the tarball
-	version="v0.0.5"
+	version="v0.0.6"
 	os="$(get_os)"
 	arch="$(get_arch)"
 	xdg_data_home="${XDG_DATA_HOME:-$HOME/bin}"

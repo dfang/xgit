@@ -68,10 +68,19 @@ func main() {
 				isDepth = true
 			}
 
+			// support 3 types of url
+			// <user>/<repo>
+			// github.com/<user>/<repo>
+			// https://github.com/<user>/<repo>
 			if strings.Contains(args[i], "https://github.com") {
 				logger.Debug("debug", slog.String("repo", args[i]))
 				args[i] = strings.Replace(args[i], "https://github.com", "https://ghproxy.com/https://github.com", -1)
 				logger.Debug("debug", slog.String("repo", args[i]))
+			} else if !strings.Contains(args[i], "http") && strings.Contains(args[i], "github.com") {
+				logger.Debug("debug", slog.String("repo", args[i]))
+				args[i] = "https://ghproxy.com/https://" + args[i]
+				logger.Debug("debug", slog.String("repo", args[i]))
+				break
 			} else if !strings.Contains(args[i], "http") && strings.Contains(args[i], "/") {
 				logger.Debug("debug", slog.String("repo", args[i]))
 				args[i] = "https://ghproxy.com/https://github.com/" + args[i]

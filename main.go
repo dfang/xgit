@@ -2,16 +2,31 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"log/slog"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
+	"sync"
+
+	"github.com/mouuff/go-rocket-update/pkg/provider"
+	"github.com/mouuff/go-rocket-update/pkg/updater"
+	"github.com/spf13/cobra"
 )
 
 var logger *slog.Logger
+var logLevel *slog.LevelVar
+
+func init() {
+	logLevel := &slog.LevelVar{} // INFO
+	opts := slog.HandlerOptions{
+		Level: logLevel,
+	}
+	logger = slog.New(slog.NewTextHandler(os.Stdout, &opts))
+}
 
 func main() {
-	logLevel := &slog.LevelVar{} // INFO
 	assciLogo := `
                       #       #     
                               #     
@@ -22,12 +37,63 @@ func main() {
  ##   ##        #   #####      ### 
            #####                    
 `
-	fmt.Printf("%srevision %s, built with %s at %s\n", assciLogo, xgitVersion, goVersion, buildTimestamp)
+	fmt.Println(assciLogo)
+	// fmt.Printf("%srevision %s, built with %s at %s\n", assciLogo, xgitVersion, goVersion, buildTimestamp)
 
-	opts := slog.HandlerOptions{
-		Level: logLevel,
+	var rootCmd = &cobra.Command{Use: "xgit"}
+	var cmdA = &cobra.Command{
+		Use:   "self-update",
+		Short: "self update xgit",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("self update ....")
+			selfUpdate()
+		},
 	}
-	logger = slog.New(slog.NewTextHandler(os.Stdout, &opts))
+
+	var cmdB = &cobra.Command{
+		Use:   "version",
+		Short: "version",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Printf("revision %s, built with %s at %s\n", xgitVersion, goVersion, buildTimestamp)
+			printVersion()
+		},
+	}
+
+	var cmdC = &cobra.Command{
+		Use:   "clone",
+		Short: "clone",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("args", args)
+			processedArgs := processArgs(args)
+			fmt.Println("processedArgs", processedArgs)
+			execShell("git", processedArgs)
+		},
+	}
+
+	rootCmd.AddCommand(cmdA, cmdB, cmdC)
+	if err := rootCmd.Execute(); err != nil {
+		// Error: unknown command "clone" for "xgit"
+		fmt.Println("deletegate to external command: git")
+
+		// fmt.Println(err)
+		os.Exit(1)
+	}
+
+	// // If no matching subcommand is found, delegate to an external command
+	// if len(os.Args) > 1 {
+	// 	fmt.Println("deletegate to external command")
+	// 	externalCommand := os.Args[1]
+	// 	externalArgs := os.Args[2:]
+	// 	cmd := exec.Command(externalCommand, externalArgs...)
+	// 	cmd.Stdout = os.Stdout
+	// 	cmd.Stderr = os.Stderr
+	// 	if err := cmd.Run(); err != nil {
+	// 		fmt.Println("Error running external command:", err)
+	// 		os.Exit(1)
+	// 	}
+	// }
+
+	os.Exit(0)
 
 	logger.Info("gitcache client")
 	args := os.Args
@@ -47,22 +113,28 @@ func main() {
 
 	logger.Info("debug", slog.Bool("isCloneMode", isClone))
 
+	execShell("git", args[1:])
+}
+
+func processArgs(args []string) []string {
+	fmt.Println("args args", args)
 	var isDepth = false
-	for i := 1; i < len(args); i++ {
-		if strings.Contains(args[i], "-vv") || strings.Contains(args[i], "-vvv") {
-			// you can change the level anytime like this
-			logLevel.Set(slog.LevelDebug)
-			args = append(args[:i], args[i+1:]...)
-			break
-		}
+	var isClone = true
+	// for i := 0; i < len(args); i++ {
+	// 	if strings.Contains(args[i], "-vv") || strings.Contains(args[i], "-vvv") {
+	// 		// you can change the level anytime like this
+	// 		// logLevel.Set(slog.LevelDebug)
+	// 		args = append(args[:i], args[i+1:]...)
+	// 		break
+	// 	}
 
-		if strings.Contains(args[i], "-version") || strings.Contains(args[i], "-v") {
-			printVersion()
-			os.Exit(0)
-		}
-	}
+	// 	if strings.Contains(args[i], "-version") || strings.Contains(args[i], "-v") {
+	// 		printVersion()
+	// 		os.Exit(0)
+	// 	}
+	// }
 
-	for i := 1; i < len(args); i++ {
+	for i := 0; i < len(args); i++ {
 		if isClone {
 			if strings.Contains(args[i], "depth") || strings.Contains(args[i], "no-depth") {
 				isDepth = true
@@ -93,11 +165,12 @@ func main() {
 	if isClone && (!isDepth) {
 		args = append(args, "--depth=1")
 	}
-
-	execShell("git", args[1:])
+	return args
 }
 
 func printVersion() {
+	fmt.Printf("runtime.GOOS %s\n", runtime.GOOS)
+	fmt.Printf("runtime.GOARCH %s\n", runtime.GOARCH)
 	fmt.Printf("git version: %s\n", xgitVersion)
 	fmt.Printf("built with: %s\n", goVersion)
 	fmt.Printf("built at: %s\n", buildTimestamp)
@@ -105,11 +178,15 @@ func printVersion() {
 }
 
 func execShell(cmd string, args []string) string {
-	var argss = ""
-	for i := 0; i < len(args); i++ {
-		argss = argss + args[i] + " "
-	}
-	logger.Debug("debug", slog.String("run", cmd+" "+string(argss)))
+	index := 0
+	args = append(args[:index+1], args[index:]...)
+	args[index] = "clone"
+
+	// Join the strings in the args slice using a space separator
+	joinedString := strings.Join(args, " ")
+
+	toExecute := fmt.Sprintf("git clone %s", joinedString)
+	logger.Info(toExecute)
 
 	var command = exec.Command(cmd, args...)
 	command.Stdout = os.Stdout
@@ -123,4 +200,49 @@ func execShell(cmd string, args []string) string {
 		return err.Error()
 	}
 	return ""
+}
+
+func selfUpdate() {
+	u := &updater.Updater{
+		Provider: &provider.Github{
+			RepositoryURL: "github.com/dfang/xgit",
+			ArchiveName:   fmt.Sprintf("xgit_%s_%s.tar.gz", strings.Title(runtime.GOOS), "x86_64"),
+		},
+		ExecutableName: "xgit",
+		Version:        "v0.0.6", // You can change this value to trigger an update
+	}
+
+	// versionFlag := false
+	// flag.BoolVar(&versionFlag, "version", false, "prints the version and exit")
+	// flag.Parse()
+
+	// if versionFlag {
+	// 	// we use this flag to verify the installation for this example:
+	// 	// https://github.com/mouuff/go-rocket-update/blob/master/examples/github-rollback/main.go
+	// 	fmt.Println(u.Version)
+	// 	return
+	// }
+
+	log.Println("Current version: " + u.Version)
+	log.Println("Looking for updates...")
+	var wg sync.WaitGroup
+	wg.Add(1)
+	// For the example we run the update in the background
+	// but you could directly call u.Update()
+	var updateStatus updater.UpdateStatus
+	var updateErr error
+	go func() {
+		updateStatus, updateErr = u.Update()
+		wg.Done()
+	}()
+
+	// Here you can execute your program
+
+	wg.Wait() // Waiting for the update process to finish before exiting
+	if updateErr != nil {
+		log.Println(updateErr)
+	}
+	if updateStatus == updater.Updated {
+		log.Println("Updated!")
+	}
 }

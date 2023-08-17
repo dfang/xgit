@@ -1,26 +1,30 @@
 # README
 
+让`git clone`更方便。 在梯子临时不好使了，或者还没来得及装梯子的环境中，想临时克隆下github仓库可以试试这个
 
-make `git clone https://github.com/<author>/<repo>` faster or work in your server that don't have VPN or proxy support.
-
+运行 `xgit clone <user>/<repo>` 就可以了, 如何需要指定克隆到哪里. `xgit clone <user>/<repo> /tmp/<repo>`
 
 ## install
+
+三种方式任选一种
 
 ```
 curl -sf https://gobinaries.com/dfang/xgit | sh
 
-curl -sf https://github.com/dfang/xgit/blob/master/scripts/install.sh | sh
+curl -sf https://raw.githubusercontent.com/dfang/xgit/master/scripts/install.sh | sh
+
+go install github.com/dfang/xgit@latest
 ```
 
 ## run
 
-```
-xgit clone https://github.com/golang/go
-```
-equals to
+三种格式都支持
 
 ```
-git clone --depth=1 https://ghproxy.com/https://github.com/golang/go
+xgit clone golang/go
+xgit clone github.com/golang/go
+xgit clone https://github.com/golang/go
+
 ```
 
 by default, `--depth=1` is added to `xgit clone`, you have to run `git fetch --unshallow` to get all old commits if you want after clone is done.

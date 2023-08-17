@@ -1,8 +1,13 @@
 # README
 
-让`git clone`更方便。 在梯子临时不好使了，或者还没来得及装梯子的环境中，想临时克隆下github仓库可以试试这个
+让`git clone`更方便。 
 
-运行 `xgit clone <user>/<repo>` 就可以了, 如何需要指定克隆到哪里. `xgit clone <user>/<repo> /tmp/<repo>`
+在梯子临时不好使了，或者还没来得及装梯子的环境中，想临时克隆下github仓库可以试试这个  
+或者经常需要克隆仓库，这个也很方便  
+
+运行 `xgit clone <user>/<repo>` 就可以了, 对比正常的`git clone https://github.com/<user>/<repo>`, `git`换成`xgit`， `https://github.com`都可以不用输了  
+
+如果需要指定克隆到哪里. `xgit clone <user>/<repo> /tmp/<repo>`
 
 ## install
 

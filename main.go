@@ -141,9 +141,9 @@ func processArgs(args []string) []string {
 			}
 
 			// support 3 types of url
-			// <user>/<repo>
-			// github.com/<user>/<repo>
 			// https://github.com/<user>/<repo>
+			// github.com/<user>/<repo>
+			// <user>/<repo>
 			if strings.Contains(args[i], "https://github.com") {
 				logger.Debug("debug", slog.String("repo", args[i]))
 				args[i] = strings.Replace(args[i], "https://github.com", "https://ghproxy.com/https://github.com", -1)
@@ -209,19 +209,9 @@ func selfUpdate() {
 			ArchiveName:   fmt.Sprintf("xgit_%s_%s.tar.gz", strings.Title(runtime.GOOS), "x86_64"),
 		},
 		ExecutableName: "xgit",
-		Version:        "v0.0.6", // You can change this value to trigger an update
+		// Version:        "v0.0.6", // You can change this value to trigger an update
+		Version: xgitVersion,
 	}
-
-	// versionFlag := false
-	// flag.BoolVar(&versionFlag, "version", false, "prints the version and exit")
-	// flag.Parse()
-
-	// if versionFlag {
-	// 	// we use this flag to verify the installation for this example:
-	// 	// https://github.com/mouuff/go-rocket-update/blob/master/examples/github-rollback/main.go
-	// 	fmt.Println(u.Version)
-	// 	return
-	// }
 
 	log.Println("Current version: " + u.Version)
 	log.Println("Looking for updates...")

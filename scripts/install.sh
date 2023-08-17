@@ -63,13 +63,13 @@ download_file() {
 
 install_xgit() {
 	# download the tarball
-	version="v0.0.6"
+	version="v0.0.8"
 	os="$(get_os)"
 	arch="$(get_arch)"
 	xdg_data_home="${XDG_DATA_HOME:-$HOME/bin}"
 	install_path="${XGIT_INSTALL_PATH:-$xdg_data_home/xgit}"
 	install_dir="$(dirname "$install_path")"
-	tarball_url="https://ghproxy.com/https://github.com/dfang/xgit/releases/download/${version}/xgit_${os}_${arch}.tar.gz"
+	tarball_url="https://ghproxy.com/https://github.com/dfang/xgit/releases/download/${version=v0.0.8}/xgit_${os}_${arch}.tar.gz"
 	cache_file=$(download_file "$tarball_url")
 	# extract tarball
 	mkdir -p "$install_dir"

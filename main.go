@@ -24,7 +24,7 @@ var (
 	version   = "dev"
 	commit    = "none"
 	date      = "unknown"
-	goVersion = ""
+	goVersion = "go 1.21"
 	repo      = "https://github.com/dfang/xgit"
 )
 
@@ -73,7 +73,7 @@ func main() {
 	}
 
 	rootCmd.AddCommand(cmdA, cmdB, cmdC)
-	rootCmd.Flags().String("version", "-v", "xxx")
+	rootCmd.Flags().Bool("debug", false, "verbose mode")
 
 	if err := rootCmd.Execute(); err != nil {
 		// Error: unknown command "clone" for "xgit"
@@ -181,14 +181,14 @@ func processArgs(args []string) []string {
 }
 
 func printVersion() {
-	fmt.Printf("runtime.GOOS %s\n", runtime.GOOS)
-	fmt.Printf("runtime.GOARCH %s\n", runtime.GOARCH)
+	// fmt.Printf("runtime.GOOS %s\n", runtime.GOOS)
+	// fmt.Printf("runtime.GOARCH %s\n", runtime.GOARCH)
 	fmt.Printf("revision: %s\n", commit)
 	fmt.Printf("xgit version: %s\n", version)
 	fmt.Printf("built with: %s\n", goVersion)
 	fmt.Printf("built at: %s\n", date)
 	fmt.Printf("repo: %s\n", repo)
-	fmt.Printf("my app %s, commit %s, built at %s", version, commit, date)
+	fmt.Printf("xgit %s, commit %s, built at %s\n", version, commit, date)
 }
 
 func execShell(cmd string, args []string) string {

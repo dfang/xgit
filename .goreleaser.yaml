@@ -13,14 +13,16 @@ builds:
       - XGIT_VERSION=$(git describe --tags --always --dirty)
       - GO_VERSION=go 1.21
       - REPO=https://github.com/dfang/xgit
+      # - Version=$(git describe --tags --always --dirty)
+      # - Commit=$()
     goos:
       - linux
       - windows
       - darwin
     goarch:
       - amd64
-    ldflags:
-      - -s -w -X "main.xgitVersion={{ .Env.XGIT_VERSION }} main.goVersion={{ .Env.GO_VERSION }} main.repo= {{ .Env.REPO}} main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser"
+    # ldflags:
+    #   - -s -w -X "main.xgitVersion={{ .Env.XGIT_VERSION }} main.goVersion={{ .Env.GO_VERSION }} main.repo= {{ .Env.REPO}} main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser"
 
 archives:
   - format: tar.gz

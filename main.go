@@ -13,18 +13,19 @@ import (
 	"github.com/mouuff/go-rocket-update/pkg/provider"
 	"github.com/mouuff/go-rocket-update/pkg/updater"
 	"github.com/spf13/cobra"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 var logger *slog.Logger
 var logLevel *slog.LevelVar
 
 var (
-	version     = "dev"
-	commit      = "none"
-	date        = "unknown"
-	xgitVersion = ""
-	goVersion   = ""
-	repo        = "https://github.com/dfang/xgit"
+	version   = "dev"
+	commit    = "none"
+	date      = "unknown"
+	goVersion = ""
+	repo      = "https://github.com/dfang/xgit"
 )
 
 func main() {
@@ -180,12 +181,13 @@ func processArgs(args []string) []string {
 }
 
 func printVersion() {
-	// fmt.Printf("runtime.GOOS %s\n", runtime.GOOS)
-	// fmt.Printf("runtime.GOARCH %s\n", runtime.GOARCH)
-	// fmt.Printf("xgit version: %s\n", xgitVersion)
-	// fmt.Printf("built with: %s\n", goVersion)
-	// fmt.Printf("built at: %s\n", buildTimestamp)
-	// fmt.Printf("repo: %s\n", repo)
+	fmt.Printf("runtime.GOOS %s\n", runtime.GOOS)
+	fmt.Printf("runtime.GOARCH %s\n", runtime.GOARCH)
+	fmt.Printf("revision: %s\n", commit)
+	fmt.Printf("xgit version: %s\n", version)
+	fmt.Printf("built with: %s\n", goVersion)
+	fmt.Printf("built at: %s\n", date)
+	fmt.Printf("repo: %s\n", repo)
 	fmt.Printf("my app %s, commit %s, built at %s", version, commit, date)
 }
 
@@ -215,14 +217,15 @@ func execShell(cmd string, args []string) string {
 }
 
 func selfUpdate() {
+	caser := cases.Title(language.English)
 	u := &updater.Updater{
 		Provider: &provider.Github{
 			RepositoryURL: "github.com/dfang/xgit",
-			ArchiveName:   fmt.Sprintf("xgit_%s_%s.tar.gz", strings.Title(runtime.GOOS), "x86_64"),
+			ArchiveName:   fmt.Sprintf("xgit_%s_%s.tar.gz", caser.String(runtime.GOOS), "x86_64"),
 		},
 		ExecutableName: "xgit",
 		// Version:        "v0.0.6", // You can change this value to trigger an update
-		Version: xgitVersion,
+		Version: version,
 	}
 
 	log.Println("Current version: " + u.Version)

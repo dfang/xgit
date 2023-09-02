@@ -14,6 +14,9 @@ build:
     # GOOS=windows GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/windows/xgit.exe .
     goreleaser release --snapshot --skip-publish --clean
 
+release:
+    goreleaser release --skip-publish --clean
+
 install:
     go install -ldflags "{{ flags }} -s -w"
 

@@ -5,6 +5,7 @@ go 1.21
 require (
 	github.com/mouuff/go-rocket-update v1.5.4
 	github.com/spf13/cobra v1.7.0
+	golang.org/x/text v0.12.0
 )
 
 require (

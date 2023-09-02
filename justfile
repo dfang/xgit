@@ -9,9 +9,10 @@ default:
     just --choose
 
 build:
-    GOOS=darwin GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/darwin/xgit .
-    GOOS=linux GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/linux/xgit .
-    GOOS=windows GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/windows/xgit.exe .
+    # GOOS=darwin GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/darwin/xgit .
+    # GOOS=linux GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/linux/xgit .
+    # GOOS=windows GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/windows/xgit.exe .
+    goreleaser release --snapshot --skip-publish --clean
 
 install:
     go install -ldflags "{{ flags }} -s -w"

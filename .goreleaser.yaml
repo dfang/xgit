@@ -9,10 +9,18 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+      - GO111MODULE=on
+      - XGIT_VERSION=$(git describe --tags --always --dirty)
+      - GO_VERSION=go 1.21
+      - REPO=https://github.com/dfang/xgit
     goos:
       - linux
       - windows
       - darwin
+    goarch:
+      - amd64
+    ldflags:
+      - -s -w -X "main.xgitVersion={{ .Env.XGIT_VERSION }} main.goVersion={{ .Env.GO_VERSION }} main.repo= {{ .Env.REPO}} main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser"
 
 archives:
   - format: tar.gz

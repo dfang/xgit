@@ -18,6 +18,15 @@ import (
 var logger *slog.Logger
 var logLevel *slog.LevelVar
 
+var (
+	version     = "dev"
+	commit      = "none"
+	date        = "unknown"
+	xgitVersion = ""
+	goVersion   = ""
+	repo        = "https://github.com/dfang/xgit"
+)
+
 func main() {
 	assciLogo := `
                       #       #     
@@ -171,12 +180,13 @@ func processArgs(args []string) []string {
 }
 
 func printVersion() {
-	fmt.Printf("runtime.GOOS %s\n", runtime.GOOS)
-	fmt.Printf("runtime.GOARCH %s\n", runtime.GOARCH)
-	fmt.Printf("xgit version: %s\n", xgitVersion)
-	fmt.Printf("built with: %s\n", goVersion)
-	fmt.Printf("built at: %s\n", buildTimestamp)
-	fmt.Printf("repo: %s\n", repo)
+	// fmt.Printf("runtime.GOOS %s\n", runtime.GOOS)
+	// fmt.Printf("runtime.GOARCH %s\n", runtime.GOARCH)
+	// fmt.Printf("xgit version: %s\n", xgitVersion)
+	// fmt.Printf("built with: %s\n", goVersion)
+	// fmt.Printf("built at: %s\n", buildTimestamp)
+	// fmt.Printf("repo: %s\n", repo)
+	fmt.Printf("my app %s, commit %s, built at %s", version, commit, date)
 }
 
 func execShell(cmd string, args []string) string {

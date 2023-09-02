@@ -18,14 +18,6 @@ import (
 var logger *slog.Logger
 var logLevel *slog.LevelVar
 
-func init() {
-	logLevel := &slog.LevelVar{} // INFO
-	opts := slog.HandlerOptions{
-		Level: logLevel,
-	}
-	logger = slog.New(slog.NewTextHandler(os.Stdout, &opts))
-}
-
 func main() {
 	assciLogo := `
                       #       #     
@@ -43,18 +35,18 @@ func main() {
 	var rootCmd = &cobra.Command{Use: "xgit"}
 	var cmdA = &cobra.Command{
 		Use:   "self-update",
-		Short: "self update xgit",
+		Short: "self update",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("self update ....")
+			fmt.Println("self update ......")
 			selfUpdate()
 		},
 	}
 
 	var cmdB = &cobra.Command{
 		Use:   "version",
-		Short: "version",
+		Short: "print version",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("revision %s, built with %s at %s\n", xgitVersion, goVersion, buildTimestamp)
+			// fmt.Printf("revision %s, built with %s at %s\n", xgitVersion, goVersion, buildTimestamp)
 			printVersion()
 		},
 	}
@@ -71,6 +63,8 @@ func main() {
 	}
 
 	rootCmd.AddCommand(cmdA, cmdB, cmdC)
+	rootCmd.Flags().String("version", "-v", "xxx")
+
 	if err := rootCmd.Execute(); err != nil {
 		// Error: unknown command "clone" for "xgit"
 		fmt.Println("deletegate to external command: git")
@@ -114,6 +108,14 @@ func main() {
 	logger.Info("debug", slog.Bool("isCloneMode", isClone))
 
 	execShell("git", args[1:])
+}
+
+func init() {
+	logLevel := &slog.LevelVar{} // INFO
+	opts := slog.HandlerOptions{
+		Level: logLevel,
+	}
+	logger = slog.New(slog.NewTextHandler(os.Stdout, &opts))
 }
 
 func processArgs(args []string) []string {
@@ -171,7 +173,7 @@ func processArgs(args []string) []string {
 func printVersion() {
 	fmt.Printf("runtime.GOOS %s\n", runtime.GOOS)
 	fmt.Printf("runtime.GOARCH %s\n", runtime.GOARCH)
-	fmt.Printf("git version: %s\n", xgitVersion)
+	fmt.Printf("xgit version: %s\n", xgitVersion)
 	fmt.Printf("built with: %s\n", goVersion)
 	fmt.Printf("built at: %s\n", buildTimestamp)
 	fmt.Printf("repo: %s\n", repo)

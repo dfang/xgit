@@ -1,5 +1,6 @@
 flags := ("-X 'main.buildTimestamp=" + `date -u '+%Y-%m-%d %H:%M:%S'` + "'"
-          + " -X 'main.xgitVersion=" + `git rev-parse --short HEAD` + "'"
+          + " -X 'main.xgitVersion=" + `git describe --tags HEAD --abbrev=0` + "'"
+          + " -X 'main.xgitBuild=" + `git rev-parse --short HEAD` + "'"
           + " -X 'main.goVersion=" + `go version` + "'")
 
 alias b := build

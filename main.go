@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"log"
-	"log/slog"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
 	"sync"
+
+	"log/slog"
 
 	"github.com/mouuff/go-rocket-update/pkg/provider"
 	"github.com/mouuff/go-rocket-update/pkg/updater"
@@ -17,8 +18,10 @@ import (
 	"golang.org/x/text/language"
 )
 
-var logger *slog.Logger
-var logLevel *slog.LevelVar
+var (
+	logger   *slog.Logger
+	logLevel *slog.LevelVar
+)
 
 var (
 	version   = "dev"
@@ -42,8 +45,8 @@ func main() {
 	fmt.Println(assciLogo)
 	// fmt.Printf("%srevision %s, built with %s at %s\n", assciLogo, xgitVersion, goVersion, buildTimestamp)
 
-	var rootCmd = &cobra.Command{Use: "xgit"}
-	var cmdA = &cobra.Command{
+	rootCmd := &cobra.Command{Use: "xgit"}
+	cmdA := &cobra.Command{
 		Use:   "self-update",
 		Short: "self update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -52,7 +55,7 @@ func main() {
 		},
 	}
 
-	var cmdB = &cobra.Command{
+	cmdB := &cobra.Command{
 		Use:   "version",
 		Short: "print version",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -61,7 +64,7 @@ func main() {
 		},
 	}
 
-	var cmdC = &cobra.Command{
+	cmdC := &cobra.Command{
 		Use:   "clone",
 		Short: "clone",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -82,42 +85,6 @@ func main() {
 		// fmt.Println(err)
 		os.Exit(1)
 	}
-
-	// // If no matching subcommand is found, delegate to an external command
-	// if len(os.Args) > 1 {
-	// 	fmt.Println("deletegate to external command")
-	// 	externalCommand := os.Args[1]
-	// 	externalArgs := os.Args[2:]
-	// 	cmd := exec.Command(externalCommand, externalArgs...)
-	// 	cmd.Stdout = os.Stdout
-	// 	cmd.Stderr = os.Stderr
-	// 	if err := cmd.Run(); err != nil {
-	// 		fmt.Println("Error running external command:", err)
-	// 		os.Exit(1)
-	// 	}
-	// }
-
-	os.Exit(0)
-
-	logger.Info("gitcache client")
-	args := os.Args
-	if logLevel.Level() == slog.LevelDebug {
-		for i, arg := range args {
-			logger.Debug("arg", slog.Int("index", i), slog.String("value", arg))
-		}
-	}
-
-	var isClone = false
-	for i := 0; i < len(args); i++ {
-		if strings.Contains(args[i], "clone") {
-			isClone = true
-			break
-		}
-	}
-
-	logger.Info("debug", slog.Bool("isCloneMode", isClone))
-
-	execShell("git", args[1:])
 }
 
 func init() {
@@ -130,8 +97,8 @@ func init() {
 
 func processArgs(args []string) []string {
 	fmt.Println("args args", args)
-	var isDepth = false
-	var isClone = true
+	isDepth := false
+	isClone := true
 	// for i := 0; i < len(args); i++ {
 	// 	if strings.Contains(args[i], "-vv") || strings.Contains(args[i], "-vvv") {
 	// 		// you can change the level anytime like this
@@ -160,15 +127,19 @@ func processArgs(args []string) []string {
 				logger.Debug("debug", slog.String("repo", args[i]))
 				args[i] = strings.Replace(args[i], "https://github.com", "https://ghproxy.com/https://github.com", -1)
 				logger.Debug("debug", slog.String("repo", args[i]))
+
+				break
 			} else if !strings.Contains(args[i], "http") && strings.Contains(args[i], "github.com") {
 				logger.Debug("debug", slog.String("repo", args[i]))
 				args[i] = "https://ghproxy.com/https://" + args[i]
 				logger.Debug("debug", slog.String("repo", args[i]))
+
 				break
 			} else if !strings.Contains(args[i], "http") && strings.Contains(args[i], "/") {
 				logger.Debug("debug", slog.String("repo", args[i]))
 				args[i] = "https://ghproxy.com/https://github.com/" + args[i]
 				logger.Debug("debug", slog.String("repo", args[i]))
+
 				break
 			}
 		}
@@ -202,10 +173,10 @@ func execShell(cmd string, args []string) string {
 	toExecute := fmt.Sprintf("git clone %s", joinedString)
 	logger.Info(toExecute)
 
-	var command = exec.Command(cmd, args...)
+	command := exec.Command(cmd, args...)
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
-	var err = command.Start()
+	err := command.Start()
 	if err != nil {
 		return err.Error()
 	}

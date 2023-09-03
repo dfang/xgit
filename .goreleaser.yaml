@@ -19,10 +19,10 @@ builds:
       - linux
       - windows
       - darwin
-    goarch:
-      - amd64
-    # ldflags:
-    #   - -s -w -X "main.xgitVersion={{ .Env.XGIT_VERSION }} main.goVersion={{ .Env.GO_VERSION }} main.repo= {{ .Env.REPO}} main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser"
+    # goarch:
+    #   - amd64
+    ldflags:
+      - -s -w -X "main.xgitVersion={{ .Env.XGIT_VERSION }} main.goVersion={{ .Env.GO_VERSION }} main.repo= {{ .Env.REPO}} main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser"
 
 archives:
   - format: tar.gz

@@ -17,12 +17,14 @@ jobs:
           # If both the go-version and the go-version-file inputs are provided then the go-version input is used.
           # go-version: '1.20' # must be quoted or 
           go-version-file: 'go.mod'
+          cache: false
       - uses: golangci/golangci-lint-action@v3
         with:
           # Require: The version of golangci-lint to use.
           # When `install-mode` is `binary` (default) the value can be v1.2 or v1.2.3 or `latest` to use the latest version.
           # When `install-mode` is `goinstall` the value can be v1.2.3, `latest`, or the hash of a commit.
           version: v1.54
+          install-mode: "binary"
   test:
     runs-on: ubuntu-latest
     needs: lint

@@ -1,0 +1,29 @@
+name: Go Nancy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - uses: actions/setup-go@v4
+      with:
+        # https://github.com/actions/setup-go#getting-go-version-from-the-gomod-file
+        # If both the go-version and the go-version-file inputs are provided then the go-version input is used.
+        # go-version: '1.20' # must be quoted or 
+        go-version-file: 'go.mod'
+        cache: false
+        
+    - name: WriteGoList
+      run: go list -json -m all > go.list
+
+    - name: Nancy
+      uses: sonatype-nexus-community/nancy-github-action@main
+      with:
+        nancyVersion: "v1.0.6"

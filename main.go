@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -45,7 +47,11 @@ func main() {
 	fmt.Println(assciLogo)
 	// fmt.Printf("%srevision %s, built with %s at %s\n", assciLogo, xgitVersion, goVersion, buildTimestamp)
 
+	var debugFlag bool
 	rootCmd := &cobra.Command{Use: "xgit"}
+
+	rootCmd.PersistentFlags().BoolVarP(&debugFlag, "debug", "d", false, "Enable debug mode")
+
 	cmdA := &cobra.Command{
 		Use:   "self-update",
 		Short: "self update",
@@ -68,15 +74,25 @@ func main() {
 		Use:   "clone",
 		Short: "clone",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("args", args)
+			logger.LogAttrs(context.Background(), slog.LevelDebug, "Running your application with debug flag")
+			if debugFlag {
+				log.Println("Debug mode is enabled.")
+				logLevel.Set(slog.LevelDebug)
+			} else {
+				// Disable logging in non-debug mode
+				log.SetOutput(io.Discard)
+				logLevel.Set(slog.LevelInfo)
+			}
+
+			logger.LogAttrs(context.Background(), slog.LevelDebug, "before processArgs", slog.Any("args", args))
 			processedArgs := processArgs(args)
-			fmt.Println("processedArgs", processedArgs)
+			logger.LogAttrs(context.Background(), slog.LevelDebug, "after processArgs", slog.Any("args", processedArgs))
+
 			execShell("git", processedArgs)
 		},
 	}
 
 	rootCmd.AddCommand(cmdA, cmdB, cmdC)
-	rootCmd.Flags().Bool("debug", false, "verbose mode")
 
 	if err := rootCmd.Execute(); err != nil {
 		// Error: unknown command "clone" for "xgit"
@@ -87,16 +103,15 @@ func main() {
 	}
 }
 
-func init() {
-	logLevel := &slog.LevelVar{} // INFO
+func init() { //nolint:gochecknoinits
+	logLevel = &slog.LevelVar{} // INFO
 	opts := slog.HandlerOptions{
 		Level: logLevel,
 	}
-	logger = slog.New(slog.NewTextHandler(os.Stdout, &opts))
+	logger = slog.New(slog.NewJSONHandler(os.Stdout, &opts))
 }
 
 func processArgs(args []string) []string {
-	fmt.Println("args args", args)
 	isDepth := false
 	isClone := true
 	// for i := 0; i < len(args); i++ {
@@ -123,9 +138,9 @@ func processArgs(args []string) []string {
 			// https://github.com/<user>/<repo>
 			// github.com/<user>/<repo>
 			// <user>/<repo>
-			if strings.Contains(args[i], "https://github.com") {
+			if strings.Contains(args[i], "https://github.com") { // nolint: gocritic
 				logger.Debug("debug", slog.String("repo", args[i]))
-				args[i] = strings.Replace(args[i], "https://github.com", "https://ghproxy.com/https://github.com", -1)
+				args[i] = strings.ReplaceAll(args[i], "https://github.com", "https://ghproxy.com/https://github.com")
 				logger.Debug("debug", slog.String("repo", args[i]))
 
 				break
@@ -148,6 +163,7 @@ func processArgs(args []string) []string {
 	if isClone && (!isDepth) {
 		args = append(args, "--depth=1")
 	}
+
 	return args
 }
 
@@ -170,8 +186,8 @@ func execShell(cmd string, args []string) string {
 	// Join the strings in the args slice using a space separator
 	joinedString := strings.Join(args, " ")
 
-	toExecute := fmt.Sprintf("git clone %s", joinedString)
-	logger.Info(toExecute)
+	toExecute := fmt.Sprintf("git %s", joinedString)
+	logger.Debug(toExecute)
 
 	command := exec.Command(cmd, args...)
 	command.Stdout = os.Stdout

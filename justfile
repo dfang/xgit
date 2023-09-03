@@ -19,7 +19,7 @@ build:
 
 release:
     # goreleaser release --skip-publish --clean
-    semantic-release --provider github --ci-condition default --hooks goreleaser --provider-opt "slug=dfang/xgit"
+    semantic-release --provider github --ci-condition default --hooks goreleaser --provider-opt "slug=dfang/xgit" --allow-initial-development-versions
 
 install:
     go install -ldflags "{{ flags }} -s -w"
@@ -27,6 +27,9 @@ install:
 lint:
     go vet ./...
     golangci-lint run ./...
+
+fix:
+    golangci-lint run --fix ./...
 
 build-docker-image:
     docker build -t dfang/xgit .

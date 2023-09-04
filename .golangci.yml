@@ -1,0 +1,44 @@
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+
+    - revive
+    - bodyclose
+    - goimports
+    - misspell
+    - godox
+    # - forbidigo
+    # - gochecknoglobals
+    # - gochecknoinits
+    # - errorlint
+    # - gocritic
+    # - goconst
+    # - gocyclo
+    # - gofumpt
+    # - unconvert
+    # - unparam
+    # - wastedassign
+
+linters-settings:
+  gocyclo:
+    min-complexity: 12
+  gofumpt:
+    extra-rules: true
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment
+  misspell:
+    locale: US
+  godox:
+    keywords: # 建议设置为BUG、FIXME、OPTIMIZE、HACK
+      - BUG
+      - FIXME
+      - OPTIMIZE
+      - HACK

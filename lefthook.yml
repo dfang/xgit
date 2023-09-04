@@ -23,3 +23,8 @@ pre-commit:
       files: git ls-files -m
       glob: "*.go"
       run: go vet {files}
+
+commit-msg:
+  scripts:
+    "commit-lint.sh":
+      runner: bash

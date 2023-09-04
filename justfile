@@ -10,6 +10,15 @@ alias b := build
 default:
     just --choose
 
+
+install-tools:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    go install github.com/evilmartians/lefthook@v1.4.3
+    go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.54.2
+    go install github.com/goreleaser/goreleaser@v1.20.0
+    go install github.com/go-semantic-release/semantic-release@v2.27.1
+
 build:
     # GOOS=darwin GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/darwin/xgit .
     # GOOS=linux GOARCH=amd64 go build -ldflags "{{ flags }} -s -w"  -o tmp/linux/xgit .

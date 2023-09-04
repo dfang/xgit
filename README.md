@@ -14,7 +14,7 @@
 三种方式任选一种
 
 ```
-curl -sf https://gobinaries.com/dfang/xgit | sh
+curl -sf http://goblin.run/github.com/dfang/xgit | sh
 
 curl -sf https://raw.githubusercontent.com/dfang/xgit/master/scripts/install.sh | sh
 

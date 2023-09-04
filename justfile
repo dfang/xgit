@@ -25,6 +25,7 @@ install:
     go install -ldflags "{{ flags }} -s -w"
 
 lint:
+    golangci-lint version
     go vet ./...
     golangci-lint run ./...
 

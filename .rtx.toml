@@ -1,2 +1,7 @@
 [tools]
 go = "1.21.0"
+# golangci-lint = "1.54"
+# lefthook = "1.4.3"
+# just = "1.14.0"
+# commitlint = "v0.10.1"
+# semantic-release = "v2.27.1"
